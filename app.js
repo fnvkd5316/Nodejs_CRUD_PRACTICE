@@ -13,7 +13,7 @@ const requestMiddleware = (req, res, next) => {
     next(); // 이게 없으면 다음으로 안돌아간다.
 };
 
-app.use(express.static("./static"));
+app.use(express.static("static"));
 app.use(express.json()); // json형태의 데이터를 parsing하여 사용할 수 있게 만듦.
 app.use(express.urlencoded());
 app.use(requestMiddleware);

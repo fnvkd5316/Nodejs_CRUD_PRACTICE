@@ -15,14 +15,14 @@
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <link href="/mystyle.css" rel="stylesheet" />
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
             justify-content: center;
         }
 
-        .hero > button {
+        .hero>button {
             width: 300px;
             height: 80px;
             font-size: 37px;
@@ -75,7 +75,7 @@
             margin-bottom: 30px;
         }
 
-        .mytitle > button:hover {
+        .mytitle>button:hover {
             border: 2px solid white;
         }
 
@@ -105,7 +105,7 @@
             margin-top: 20px;
         }
 
-        .mybtns > button {
+        .mybtns>button {
             margin-right: 10px;
         }
 
@@ -130,16 +130,18 @@
             height: 300px;
         }
 
-        .input-group-text{
+        .input-group-text {
             color: white;
         }
+
         .file-cta {
             background-color: #f5f5f5;
             color: white;
         }
-        .button level-item has-text-centered is-sparta{
-         color: white;
-         }
+
+        .button level-item has-text-centered is-sparta {
+            color: white;
+        }
 
         .btn-dark {
             color: #fff;
@@ -152,8 +154,6 @@
             border-color: #e8344e;
             color: #e8344e !important;
         }
-
-
     </style>
     <script>
         $(document).ready(function () {
@@ -161,8 +161,6 @@
         });
 
         function listing() {
-            alert("listing 들어왔습니다.");
-
             $.ajax({
                 type: 'GET',
                 url: '/foods',
@@ -173,19 +171,23 @@
                     rows.sort((a, b) => new Date(b['changeDate']) - new Date(a['changeDate']));
 
                     for (let i = 0; i < rows.length; i++) {
-                        let foodid         = rows[i]['_id'];
-                        let writer         = rows[i]['writer'];
-                        let foodName       = rows[i]['foodName'];
-                        let category       = rows[i]['category'];
-                        let image          = rows[i]['thumbnailUrl'];                    
-                        let comment        = rows[i]['comment'];
+                        let foodId = rows[i]['foodId'];
+                        let writer = rows[i]['writer'];
+                        let foodName = rows[i]['foodName'];
+                        let category = rows[i]['category'];
+                        let image = rows[i]['thumbnailUrl'];
+                        let comment = rows[i]['comment'];
                         let expirationDate = rows[i]['expirationDate']
-                        let changeDate     = rows[i]['changeDate'];
-                        let modification   = rows[i]['modification'];
+                        let changeDate = rows[i]['changeDate'];
+                        let modification = rows[i]['modification'];
+
+                        if (modification) {
+                            changeDate += "(수정됨)";
+                        }
 
                         let temp_html = `<div class="col">
                                             <div class="card h-100" style="Display: flex ; border-color: #34cde8 ">
-                                                <img src="/static/${image}" class="card-img-top" alt="img" >
+                                                <img src="${image}" class="card-img-top" alt="img" >
                                                 <div class="card-body">
                                                     <h5 class="card-title">음식: ${foodName}</h5>
                                                     <p typeof="date" class="card-text">유통기한: ${expirationDate}</p>
@@ -193,13 +195,14 @@
                                                     <p class="mycomment">작성자: ${writer}</p>
                                                     <p typeof="date" class="card-text">등록일자: ${changeDate}</p>
                                                     <nav class="level is-mobile">
-                                                        <button class="level-item button is-sparta" onclick='add_modal_box(${foodid}); $("#modal-edit").addClass("is-active");'>
+                                                        <button class="level-item button is-sparta" onclick='add_modal(${foodId}); $("#modal-edit").addClass("is-active");'>
                                                         수정 </button>
-                                                        <button class="level-item button is-sparta is-outlined" onclick="deleteFood(${foodid})"> 삭제 </button>
+                                                        <button class="level-item button is-sparta is-outlined" onclick="deleteFood(${foodId})"> 삭제 </button>
                                                     <nav>
                                                 </div>
                                             </div>
-                                         </div>`
+                                        </div>`
+
                         $('#cards-box').append(temp_html)
                     }
                 }
@@ -209,14 +212,14 @@
         function date_str() {
             let dt = new Date();
 
-            let date_string = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()} ${dt.getHours()}:${dt.getMinutes()}`;
+            let date_string = `${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()} ${dt.getHours()}:${dt.getMinutes()}`;
 
             return date_string;
         };
 
         //음식 정보 저장
         function save_food() {
-            let writer = "김형근";                // 썸네일
+            let writer = "김형근";                // 작성자
             let password = "1234"                  // 비밀번호
             let foodName = $('#name').val();       // 음식이름
             let category = $('#group').val();      // 종류
@@ -247,11 +250,11 @@
             });
         }
 
-        function deleteFood(foodid) {
+        function deleteFood(foodId) {
             $.ajax({
                 type: "DELETE",
                 url: "/foods",
-                data: {foodid_give: foodid},
+                data: { foodid_give: foodId },
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
@@ -259,31 +262,23 @@
             });
         }
 
-        function update_foodinfo(foodid) {
+        function update_foodinfo(foodId) {
 
-            let name = $('#input_name').val();
-            let group = $('#input_group').val();
-            let date = $('#input_date').val();
+            let password = "1234"                       // 비밀번호
+            let foodName = $('#input_name').val();
+            let category = $('#input_group').val();
+            let thumbnailUrl = "";                      // 썸네일
             let comment = $('#input_comment').val();
+            let expirationDate = $('#input_date').val();
+            let changeDate = date_str();           // 수정 or 생성날짜
+            let modification = true;              // 수정여부: false - 첫 생성이니
 
-            let file = $('#input_file')[0].files[0];
-
-            let update_data = new FormData();
-            update_data.append("foodid_give", foodid);
-            update_data.append("name_give", name);
-            update_data.append("comment_give", comment);
-            update_data.append("group_give", group);
-            update_data.append("date_give", date);
-            update_data.append("file_give", file);
-
-            if (name == '') {
-                alert('이름을 입력해주세요');
+            if (foodName == '') {
+                alert('음식 이름을 입력해주세요');
             } else if (group == '-- 선택하기 --') {
                 alert('종류를 선택해주세요');
-            } else if (date == '') {
-                alert('날짜를 선택해주세요');
-            } else if (file == null) {
-                alert('사진을 등록해주세요');
+            } else if (expirationDate == '') {
+                alert('유통기한을 선택해주세요');
             } else if (comment == '') {
                 alert('코멘트를 입력해주세요');
             }
@@ -291,19 +286,29 @@
             $.ajax({
                 type: "PUT",
                 url: "/foods",
-                contentType: false,
-                processData: false,
-                data: update_data,
+                data: {
+                    foodId,
+                    password,
+                    foodName,
+                    category,
+                    thumbnailUrl,
+                    comment,
+                    expirationDate,
+                    changeDate,
+                    modification
+                },
                 success: function (response) {
-                    if (response["result"] == "success") {
-                        alert(response["msg"])
-                        window.location.reload()
-                    }
+                    alert(response["msg"]);
+                    window.location.reload();
+                },
+                error: function (response) {
+                    alert(`error: ${response["msg"]}`);
+                    window.location.reload();
                 }
             });
         }
 
-        function add_modal_box(foodid) {
+        function add_modal(foodId) {
             let temp_html = `<div class="box">
                                 <article class="media">
                                     <div class="media-content">
@@ -312,7 +317,7 @@
                                             <label class="label" for="name">이름</label>
                                             <p class="control">
                                                 <input id="input_name" class="input"
-                                                       placeholder="" value="{{name}}">
+                                                       placeholder="" value="">
                                             </p>
                                         </div>
                                         <div class="input-group mb-3">
@@ -359,20 +364,19 @@
                                             </div>
                                             <div class="level-right">
                                                 <div class="level-item">
-                                                    <a class="button is-sparta" style="background-color: #34cde8" onclick="update_foodinfo(${foodid})">업데이트</a>
+                                                    <a class="button is-sparta" style="background-color: #34cde8" onclick="update_foodinfo(${foodId})">업데이트</a>
                                                 </div>
                                                 <div class="level-item">
                                                     <a class="button is-sparta is-outlined"
                                                      onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'>취소</a>
                                                 </div>
-
                                             </div>
                                         </nav>
                                     </div>
                                 </article>
                             </div>
-                            `
-            $('.modal-content').append(temp_html)
+                            `;
+            $('.modal-content').append(temp_html);
         }
 
         function delete_modal_box() {
@@ -387,102 +391,95 @@
             $('#post-box').hide()
         }
 
-        function sign_out() {
-            $.removeCookie('mytoken', {path: '/'});
-            window.location.href = "/login"
-        }
-
     </script>
 </head>
 
 <body>
-<!--네비게이션 바-->
-<header class="nav">
-    <nav>
-        <div>
-            <h5 class="login_text" style="display: inline">안녕하세요</h5>
-        </div>
-    </nav>
-</header>
-<!--title -->
-<section class="hero ">
-    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-        <h1 class="mytitle is-sparta">오늘 사온 음식을 넣어주세요!</h1>
-    </div>
-    <button onclick="open_box()">기록하기</button>
-</section>
-
-<div class="btn-box">
-
-</div>
-
-<div class="mypost" id="post-box">
-    <div class="form-floating">
-        <textarea id="name" class="form-control" placeholder="Leave a name here" style="margin-bottom: 17px"></textarea>
-        <label for="floatingTextarea2"> 음식이름 </label>
-    </div>
-    <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01"
-               style="padding-right: 43px;   background-color: #34cde8; text-align: center" >종류</label>
-        <select class="form-select" id="group">
-            <option selected>-- 선택하기 --</option>
-            <option value="과일">과일</option>
-            <option value="채소">채소</option>
-            <option value="음료">음료</option>
-            <option value="물">물</option>
-            <option value="인스턴스">인스턴트</option>
-        </select>
-    </div>
-
-    <div class="input-group input-group-sm mb-3">
-        <div class="size">
-            <div class="labelBox">
-                <span class="input-group-text" style="background-color: #34cde8" style="padding-right: 10px">유통기한</span>
+    <!--네비게이션 바-->
+    <header class="nav">
+        <nav>
+            <div>
+                <h5 class="login_text" style="display: inline">안녕하세요</h5>
             </div>
+        </nav>
+    </header>
+    <!--title -->
+    <section class="hero ">
+        <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+            <h1 class="mytitle is-sparta">오늘 사온 음식을 넣어주세요!</h1>
         </div>
-        <input type="date" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" id="date">
-    </div>
+        <button onclick="open_box()">기록하기</button>
+    </section>
 
-    <div class="file">
-        <label class="file-label">
-          <input class="file-input" type="file" name="resume" id="file" style="background-color: #34cde8">
-          <span class="file-cta" style="background-color: #34cde8;margin-top: 15px;">
-          <span class="file-label" style="background-color: #34cde8">
-            사진 올리기
-          </span>
-        </span>
-        </label>
-    </div>
-    <div class="form-floating">
-        <textarea id="comment" class="form-control" placeholder="Leave a name here"></textarea>
-        <label for="floatingTextarea2"> 코멘트 </label>
-    </div>    
-
-    <div class="mybtns">
-        <button onclick="save_food()" type="button" class="btn btn-dark" style="background-color: #34cde8">냉장고에 넣기!
-        </button>
-        <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
-    </div>
-</div>
-<div class="mycards">
-    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-    </div>
-</div>
-
-<!--        수정 하기 모달-->
-<div class="modal" id="modal-edit">
-    <div class="modal-background" onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></div>
-    <div class="modal-content">
+    <div class="btn-box">
 
     </div>
-    <button class="modal-close is-large" aria-label="close"
+
+    <div class="mypost" id="post-box">
+        <div class="form-floating">
+            <textarea id="name" class="form-control" placeholder="Leave a name here"
+                style="margin-bottom: 17px"></textarea>
+            <label for="floatingTextarea2"> 음식이름 </label>
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01"
+                style="padding-right: 43px;   background-color: #34cde8; text-align: center">종류</label>
+            <select class="form-select" id="group">
+                <option selected>-- 선택하기 --</option>
+                <option value="과일">과일</option>
+                <option value="채소">채소</option>
+                <option value="음료">음료</option>
+                <option value="물">물</option>
+                <option value="인스턴스">인스턴트</option>
+            </select>
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+            <div class="size">
+                <div class="labelBox">
+                    <span class="input-group-text" style="background-color: #34cde8"
+                        style="padding-right: 10px">유통기한</span>
+                </div>
+            </div>
+            <input type="date" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+                id="date">
+        </div>
+
+        <div class="file">
+            <label class="file-label">
+                <input class="file-input" type="file" name="resume" id="file" style="background-color: #34cde8">
+                <span class="file-cta" style="background-color: #34cde8;margin-top: 15px;">
+                    <span class="file-label" style="background-color: #34cde8">
+                        사진 올리기
+                    </span>
+                </span>
+            </label>
+        </div>
+        <div class="form-floating">
+            <textarea id="comment" class="form-control" placeholder="Leave a name here"></textarea>
+            <label for="floatingTextarea2"> 코멘트 </label>
+        </div>
+
+        <div class="mybtns">
+            <button onclick="save_food()" type="button" class="btn btn-dark" style="background-color: #34cde8">냉장고에 넣기!
+            </button>
+            <button onclick="close_box()" type="button" class="btn btn-outline-dark">닫기</button>
+        </div>
+    </div>
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+        </div>
+    </div>
+
+    <!-- 수정 하기 모달-->
+    <div class="modal" id="modal-edit">
+        <div class="modal-background" onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></div>
+        <div class="modal-content">
+
+        </div>
+        <button class="modal-close is-large" aria-label="close"
             onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></button>
-</div>
-
-<!-- </div>
-<button class="modal-close is-large" aria-label="close"
-        onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></button>
-</div> -->
+    </div>
 </body>
 
 </html>

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const { boolean } = require("webidl-conversions");
 
 const foodSchema = mongoose.Schema({
+    foodId: {
+        type: Number,
+        required: true,
+        unique: true,
+    },
     writer: {
         type: String,
         required: true,
