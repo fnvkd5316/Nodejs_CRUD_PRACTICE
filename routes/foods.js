@@ -9,23 +9,48 @@ router.get("/", (req, res) => { //음식 조회
     res.send("None");
 });
 
-router.post("/", (req, res) => { //음식 등록
-    console.log("들어오긴 하나요?");
+router.post("/", async (req, res) => { //음식 등록
+    const { 
+        writer,
+        password,
+        foodName,
+        category,
+        thumbnailUrl,
+        comment,
+        expirationDate,
+        changeDate,
+        modification
+    } = req.body;
 
-    const foodinfo = req.body;
+    await Foods.create({
+        writer,
+        password: Number(password),
+        foodName,
+        category,
+        thumbnailUrl,
+        comment,
+        expirationDate,
+        changeDate,
+        modification
+    });    
 
-    console.log(foodinfo);
-
-    res.send("None");
+    res.json({
+        success: true,
+        msg: "등록 되었습니다."
+    });
 });
 
 router.delete("/", (req, res) => { //음식 삭제
-    res.send("None");
+    res.json({
+        success: true,
+    });
 
 });
 
 router.put("/", (req, res) => { //음식 내용 수정
-    res.send("None");
+    res.json({
+        success: true,
+    });
 
 });
 

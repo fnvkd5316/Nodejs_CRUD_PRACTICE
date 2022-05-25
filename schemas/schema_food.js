@@ -5,17 +5,16 @@ const foodSchema = mongoose.Schema({
     writer: {
         type: String,
         required: true,
-        unique: true
     },
     password: {
-        type: String,  
+        type: Number,  
         required: true,      
     },
     foodName: {
         type: String,        
     },
     category: {
-        type: Number,
+        type: String,
     },    
     thumbnailUrl: {
         type: String,
@@ -30,7 +29,7 @@ const foodSchema = mongoose.Schema({
         type: String,
     },
     modification: {
-        type: boolean,
+        type: Boolean,
     },
 });
 
