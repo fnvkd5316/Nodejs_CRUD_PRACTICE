@@ -8,7 +8,6 @@ Connect_MongoDB(); //DB 연결
 
 const foodsRouter = require("./routes/foods");
 
-
 const requestMiddleware = (req, res, next) => { 
     console.log('Request URL:', req.originalUrl, ' - ', new Date());
     next(); // 이게 없으면 다음으로 안돌아간다.
@@ -19,14 +18,8 @@ app.use(express.json()); // json형태의 데이터를 parsing하여 사용할 �
 app.use(express.urlencoded());
 app.use(requestMiddleware);
 
-app.use("/api", [foodsRouter]);
-
-app.get('/', (req, res) => {
-    res.send("hello");
-});
-
+app.use("/foods", [foodsRouter]);
 
 app.listen(port, () => {
     console.log(port, "포트로 서버가 켜졌습니다.")
-
 });
