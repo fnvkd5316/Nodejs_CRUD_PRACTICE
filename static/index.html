@@ -161,44 +161,58 @@
         });
 
         function listing() {
+            alert("listing 들어왔습니다.");
+
             $.ajax({
                 type: 'GET',
-                url: 'foods',
+                url: '/foods',
                 data: {},
                 success: function (response) {
-                    console.log(response)
-                    let rows = response['fridge']
+
+                    let rows = response['foods'];
+                    rows.sort((a, b) => new Date(b['changeDate']) - new Date(a['changeDate']));
+
                     for (let i = 0; i < rows.length; i++) {
-                        let comment = rows[i]['comment']
-                        let name = rows[i]['name']
-                        let image = rows[i]['file']
-                        let date = rows[i]['date']
-                        let star = rows[i]['star']
-                        let foodid = rows[i]['foodid']
-                        let star_image = '⭐'.repeat(star)
+                        let foodid         = rows[i]['_id'];
+                        let writer         = rows[i]['writer'];
+                        let foodName       = rows[i]['foodName'];
+                        let category       = rows[i]['category'];
+                        let image          = rows[i]['thumbnailUrl'];                    
+                        let comment        = rows[i]['comment'];
+                        let expirationDate = rows[i]['expirationDate']
+                        let changeDate     = rows[i]['changeDate'];
+                        let modification   = rows[i]['modification'];
 
                         let temp_html = `<div class="col">
-                                        <div class="card h-100" style="Display: flex ; border-color: #34cde8 ">
-                                            <img src="/static/${image}" class="card-img-top" alt="img" >
-                                            <div class="card-body">
-
-                                                <h5 class="card-title">${name}</h5>
-                                                <p typeof="date" class="card-text">${date}</p>
-                                                <p>${star_image}</p>
-                                                <p class="mycomment">${comment}</p>
-                                                <nav class="level is-mobile">
-                                                     <button class="level-item button is-sparta" onclick='add_modal_box(${foodid}); $("#modal-edit").addClass("is-active");'>
-                                                      수정 </button>
-                                                      <button class="level-item button is-sparta is-outlined" onclick="deleteFood(${foodid})"> 삭제 </button>
-                                                   <nav>
+                                            <div class="card h-100" style="Display: flex ; border-color: #34cde8 ">
+                                                <img src="/static/${image}" class="card-img-top" alt="img" >
+                                                <div class="card-body">
+                                                    <h5 class="card-title">음식: ${foodName}</h5>
+                                                    <p typeof="date" class="card-text">유통기한: ${expirationDate}</p>
+                                                    <p class="mycomment">comment: ${comment}</p>
+                                                    <p class="mycomment">작성자: ${writer}</p>
+                                                    <p typeof="date" class="card-text">등록일자: ${changeDate}</p>
+                                                    <nav class="level is-mobile">
+                                                        <button class="level-item button is-sparta" onclick='add_modal_box(${foodid}); $("#modal-edit").addClass("is-active");'>
+                                                        수정 </button>
+                                                        <button class="level-item button is-sparta is-outlined" onclick="deleteFood(${foodid})"> 삭제 </button>
+                                                    <nav>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>`
+                                         </div>`
                         $('#cards-box').append(temp_html)
                     }
                 }
             })
         }
+
+        function date_str() {
+            let dt = new Date();
+
+            let date_string = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()} ${dt.getHours()}:${dt.getMinutes()}`;
+
+            return date_string;
+        };
 
         //음식 정보 저장
         function save_food() {
@@ -209,7 +223,7 @@
             let thumbnailUrl = "";                 // 썸네일
             let comment = $('#comment').val();     // 내용
             let expirationDate = $('#date').val(); // 유통기한
-            let changeDate = new Date();           // 수정 or 생성날짜
+            let changeDate = date_str();           // 수정 or 생성날짜
             let modification = false;              // 수정여부: false - 첫 생성이니
 
             $.ajax({
@@ -465,10 +479,10 @@
             onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></button>
 </div>
 
-</div>
+<!-- </div>
 <button class="modal-close is-large" aria-label="close"
         onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'></button>
-</div>
+</div> -->
 </body>
 
 </html>

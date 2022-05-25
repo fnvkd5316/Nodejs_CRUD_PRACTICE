@@ -5,8 +5,13 @@ const router = express.Router();
 
 // /foods 가 base
 
-router.get("/", (req, res) => { //음식 조회
-    res.send("None");
+router.get("/", async (req, res) => { //음식 조회
+    const foods = await Foods.find({'password': false});
+    
+    res.json({
+        success: true,
+        foods,
+    });
 });
 
 router.post("/", async (req, res) => { //음식 등록
