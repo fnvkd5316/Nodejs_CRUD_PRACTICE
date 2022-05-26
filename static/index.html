@@ -191,18 +191,11 @@
 
                         let temp_html = `<div class="col">
                                             <div class="card h-100" style="Display: flex ; border-color: #34cde8 ">
-                                                <img src="${thumbnailUrl}" class="card-img-top">
+                                                <img type = "button" src="${thumbnailUrl}" class="card-img-top" onclick = 'get_food(${foodId}); $("#modal-edit").addClass("is-active");'>
                                                 <div class="card-body">
                                                     <h5 class="card-title">음식: ${foodName}</h5>
                                                     <p typeof="date" class="card-text">유통기한: ${expirationDate}</p>
-                                                    <p class="mycomment">comment: ${comment}</p>
-                                                    <p class="mycomment">작성자: ${writer}</p>
                                                     <p typeof="date" class="card-text">등록일자: ${changeDate}</p>
-                                                    <nav class="level is-mobile">
-                                                        <button class="level-item button is-sparta" onclick='update_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'>
-                                                        수정 </button>
-                                                        <button class="level-item button is-sparta is-outlined" onclick='delete_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'> 삭제 </button>
-                                                    <nav>
                                                 </div>
                                             </div>
                                         </div>`
@@ -324,7 +317,57 @@
             });
         }
 
+        function get_food(foodId) {
+            $.ajax({
+                type: 'GET',
+                url: `/foods/${foodId}`,
+                data: {},
+                success: function (response) {
+                    delete_modal_box();
+
+                    let rows = response['food'];
+                    
+                    let foodId = rows['foodId'];
+                    let writer = rows['writer'];
+                    let foodName = rows['foodName'];
+                    let thumbnailUrl = rows['thumbnailUrl'];
+                    let comment = rows['comment'];
+                    let expirationDate = rows['expirationDate']
+                    let changeDate = rows['changeDate'];
+                    let modification = rows['modification'];
+
+                    if (modification) {
+                        changeDate += "(수정됨)";
+                    }
+
+                    let temp_html = `<div class="box">
+                                <article class="media">
+                                    <div class="media-content">
+                                        <h1>${foodName}</h1>                          
+                                        <img src="${thumbnailUrl}" >                                                  
+                                        <p class="mycomment">comment:</p>
+                                        <p class="mycomment">${comment}</p>
+                                        <p class="mycomment">작성자: ${writer}</p>
+                                        <p class="mycomment">유통기한: ${expirationDate}</p>                                            
+                                        <p typeof="date" class="card-text">등록일자: ${changeDate}</p>
+                                        <nav class="level is-mobile">
+                                            <button class="level-item button is-sparta" onclick='update_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'>
+                                            수정 </button>
+                                            <button class="level-item button is-sparta is-outlined" onclick='delete_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'> 삭제 </button>
+                                            <button class="level-item button is-sparta green-outlined" onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'> 나가기 </button>                                            
+                                        <nav>
+                                    </div>
+                                </article>
+                            </div>
+                            `;
+
+                    $('.modal-content').append(temp_html);
+                }
+            })            
+        }
+
         function update_req_modal(foodId) {
+            delete_modal_box();
             let temp_html = `<div class="box">
                                 <article class="media">
                                     <div class="media-content">
@@ -382,6 +425,7 @@
         }
 
         function delete_req_modal(foodId) {
+            delete_modal_box();
             let temp_html = `<div class="box">
                                 <article class="media">
                                     <div class="media-content">

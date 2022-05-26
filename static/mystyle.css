@@ -99,3 +99,9 @@
     border-color: #e8344e;
     color: #e8344e !important;
 }
+
+.button.is-sparta.green-outlined {
+    background-color: transparent;
+    border-color: #33cfbb;
+    color: #33cfbb !important;
+}

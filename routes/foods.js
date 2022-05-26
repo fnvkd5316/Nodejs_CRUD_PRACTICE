@@ -107,4 +107,15 @@ router.delete("/", async (req, res) => { //음식 삭제
     }
 });
 
+router.get("/:foodId", async (req, res) => {
+
+    const {foodId} = req.params;
+
+    const food = await Foods.findOne({ foodId }, { '_id': false, 'password': false });
+
+    res.json({
+        food,
+    });
+});
+
 module.exports = router;
