@@ -111,7 +111,6 @@
 
         .modal-content {
             width: 30%;
-            height: 70%;
 
             margin: 0;
             padding: 0;
@@ -200,14 +199,14 @@
                                                     <p class="mycomment">작성자: ${writer}</p>
                                                     <p typeof="date" class="card-text">등록일자: ${changeDate}</p>
                                                     <nav class="level is-mobile">
-                                                        <button class="level-item button is-sparta" onclick='add_modal(${foodId}); $("#modal-edit").addClass("is-active");'>
+                                                        <button class="level-item button is-sparta" onclick='update_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'>
                                                         수정 </button>
-                                                        <button class="level-item button is-sparta is-outlined" onclick="deleteFood(${foodId})"> 삭제 </button>
+                                                        <button class="level-item button is-sparta is-outlined" onclick='delete_req_modal(${foodId}); $("#modal-edit").addClass("is-active");'> 삭제 </button>
                                                     <nav>
                                                 </div>
                                             </div>
                                         </div>`
-
+                                        
                         $('#cards-box').append(temp_html)
                     }
                 }
@@ -256,7 +255,7 @@
         }
 
         function deleteFood(foodId) {
-            let password = "1234"; //비밀번호 구현해야함.
+            let password = $('#delete_password').val();
 
             $.ajax({
                 type: "DELETE",
@@ -288,13 +287,17 @@
             let modification = true;                    // 수정여부: false - 첫 생성이니
 
             if (password === '') {
-                alert('비밀번호를 입력해주세요');                
+                alert('비밀번호를 입력해주세요');     
+                return;           
             } else if (foodName === '') {
                 alert('음식 이름을 입력해주세요');
+                return;
             } else if (expirationDate === '') {
                 alert('유통기한을 선택해주세요');
+                return;
             } else if (comment === '') {
                 alert('코멘트를 입력해주세요');
+                return;
             }
 
             $.ajax({
@@ -317,12 +320,11 @@
                 },
                 error: function (response) {
                     alert("비밀번호가 틀렸거나, 없는 음식입니다.");
-                    window.location.reload();
                 }
             });
         }
 
-        function add_modal(foodId) {
+        function update_req_modal(foodId) {
             let temp_html = `<div class="box">
                                 <article class="media">
                                     <div class="media-content">
@@ -379,41 +381,14 @@
             $('.modal-content').append(temp_html);
         }
 
-        function add_modal(foodId) {
+        function delete_req_modal(foodId) {
             let temp_html = `<div class="box">
                                 <article class="media">
                                     <div class="media-content">
-                                        <!-- 음식 이름-->
-                                        <div class="form-floating">
-                                            <textarea id="input_name" class="form-control" placeholder="Leave a name here"
-                                                style="margin-bottom: 17px"></textarea>
-                                            <label for="floatingTextarea2"> 음식이름 </label>
-                                        </div>
-
-                                        <div class="form-floating mb-3">
-                                            <input id="input_url" type="email" class="form-control" placeholder="name@example.com">
-                                            <label>사진URL</label>
-                                        </div>
-
-                                        <div class="field">
-                                            <label class="label" for="textarea-about">comment</label>
-                                            <p class="control">
-                                                <textarea id="input_comment" class="textarea" placeholder="" value="comment" style="margin-bottom: 17px"></textarea>
-                                            </p>
-                                        </div>
-
-                                        <!--유통기한-->
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="size">
-                                                <div class="labelBox">
-                                                    <span class="input-group-text" style="background-color: #34cde8">유통기한</span>
-                                                </div>
-                                            </div>
-                                            <input type="date" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" id="input_date">
-                                        </div>
+                                        <h2>삭제하시겠습니까?</h2>
 
                                         <div class="input-group mb-3">
-                                            <input id = "input_password" type="text" class="form-control" placeholder="비밀번호" aria-label="Server">
+                                            <input id = "delete_password" type="text" class="form-control" placeholder="비밀번호" aria-label="Server">
                                         </div>
 
                                         <nav class="level is-mobile">
@@ -421,11 +396,11 @@
                                             </div>
                                             <div class="level-right">
                                                 <div class="level-item">
-                                                    <a class="button is-sparta" style="background-color: #34cde8" onclick="update_foodinfo(${foodId})">업데이트</a>
-                                                </div>
-                                                <div class="level-item">
                                                     <a class="button is-sparta is-outlined"
-                                                     onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'>취소</a>
+                                                    onclick="deleteFood(${foodId})")'>삭제</a>
+                                                </div>                                                
+                                                <div class="level-item">
+                                                    <a class="button is-sparta" style="background-color: #34cde8" onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active");'>취소</a>
                                                 </div>
                                             </div>
                                         </nav>
