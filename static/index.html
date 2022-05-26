@@ -154,6 +154,11 @@
             border-color: #e8344e;
             color: #e8344e !important;
         }
+
+        #writer{
+            width: 30px;
+        }
+
     </style>
     <script>
         $(document).ready(function () {
@@ -175,7 +180,7 @@
                         let writer = rows[i]['writer'];
                         let foodName = rows[i]['foodName'];
                         let category = rows[i]['category'];
-                        let image = rows[i]['thumbnailUrl'];
+                        let thumbnailUrl = rows[i]['thumbnailUrl'];
                         let comment = rows[i]['comment'];
                         let expirationDate = rows[i]['expirationDate']
                         let changeDate = rows[i]['changeDate'];
@@ -187,7 +192,7 @@
 
                         let temp_html = `<div class="col">
                                             <div class="card h-100" style="Display: flex ; border-color: #34cde8 ">
-                                                <img src="${image}" class="card-img-top" alt="img" >
+                                                <img src="${thumbnailUrl}" class="card-img-top">
                                                 <div class="card-body">
                                                     <h5 class="card-title">음식: ${foodName}</h5>
                                                     <p typeof="date" class="card-text">유통기한: ${expirationDate}</p>
@@ -219,11 +224,11 @@
 
         //음식 정보 저장
         function save_food() {
-            let writer = "김형근";                // 작성자
-            let password = "1234"                  // 비밀번호
+            let writer = $('#writer').val();       // 작성자
+            let password = $('#password').val();   // 비밀번호
             let foodName = $('#name').val();       // 음식이름
-            let category = $('#group').val();      // 종류
-            let thumbnailUrl = "";                 // 썸네일
+            let category = "채소";                 // 종류
+            let thumbnailUrl = $('#url').val()
             let comment = $('#comment').val();     // 내용
             let expirationDate = $('#date').val(); // 유통기한
             let changeDate = date_str();           // 수정 or 생성날짜
@@ -256,7 +261,7 @@
             $.ajax({
                 type: "DELETE",
                 url: "/foods",
-                data: { 
+                data: {
                     foodId,
                     password
                 },
@@ -265,7 +270,7 @@
                     alert(response["msg"]);
                     window.location.reload();
                 },
-                error: function (response) {                   
+                error: function (response) {
                     alert("비밀번호가 틀렸거나, 없는 음식입니다.");
                 }
             });
@@ -273,22 +278,22 @@
 
         function update_foodinfo(foodId) {
 
-            let password = "1234"                       // 비밀번호
-            let foodName = $('#input_name').val();
-            let category = $('#input_group').val();
-            let thumbnailUrl = "";                      // 썸네일
-            let comment = $('#input_comment').val();
-            let expirationDate = $('#input_date').val();
-            let changeDate = date_str();           // 수정 or 생성날짜
-            let modification = true;              // 수정여부: false - 첫 생성이니
+            let password = $('#input_password').val();  // 비밀번호
+            let foodName = $('#input_name').val();      // 음식 이름
+            let category = "채소";                      // 종류
+            let thumbnailUrl = $('#input_url').val();   // 썸네일
+            let comment = $('#input_comment').val();    // 내용
+            let expirationDate = $('#input_date').val();// 유통기한
+            let changeDate = date_str();                // 수정 or 생성날짜
+            let modification = true;                    // 수정여부: false - 첫 생성이니
 
-            if (foodName == '') {
+            if (password === '') {
+                alert('비밀번호를 입력해주세요');                
+            } else if (foodName === '') {
                 alert('음식 이름을 입력해주세요');
-            } else if (group == '-- 선택하기 --') {
-                alert('종류를 선택해주세요');
-            } else if (expirationDate == '') {
+            } else if (expirationDate === '') {
                 alert('유통기한을 선택해주세요');
-            } else if (comment == '') {
+            } else if (comment === '') {
                 alert('코멘트를 입력해주세요');
             }
 
@@ -311,7 +316,7 @@
                     window.location.reload();
                 },
                 error: function (response) {
-                    alert(`error: ${response["msg"]}`);
+                    alert("비밀번호가 틀렸거나, 없는 음식입니다.");
                     window.location.reload();
                 }
             });
@@ -322,24 +327,24 @@
                                 <article class="media">
                                     <div class="media-content">
                                         <!-- 음식 이름-->
+                                        <div class="form-floating">
+                                            <textarea id="input_name" class="form-control" placeholder="Leave a name here"
+                                                style="margin-bottom: 17px"></textarea>
+                                            <label for="floatingTextarea2"> 음식이름 </label>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input id="input_url" type="email" class="form-control" placeholder="name@example.com">
+                                            <label>사진URL</label>
+                                        </div>
+
                                         <div class="field">
-                                            <label class="label" for="name">이름</label>
+                                            <label class="label" for="textarea-about">comment</label>
                                             <p class="control">
-                                                <input id="input_name" class="input"
-                                                       placeholder="" value="">
+                                                <textarea id="input_comment" class="textarea" placeholder="" value="comment" style="margin-bottom: 17px"></textarea>
                                             </p>
                                         </div>
-                                        <div class="input-group mb-3">
-                                            <label class="input-group-text" for="inputGroupSelect01" style="padding-right: 36px; background-color: #34cde8">종 류</label>
-                                            <select class="form-select" id="input_group">
-                                                <option selected>-- 선택하기 --</option>
-                                                <option value="과일">과일</option>
-                                                <option value="채소">채소</option>
-                                                <option value="음료">음료</option>
-                                                <option value="물">물</option>
-                                                <option value="인스턴스">인스턴스</option>
-                                            </select>
-                                        </div>
+
                                         <!--유통기한-->
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="size">
@@ -350,22 +355,8 @@
                                             <input type="date" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" id="input_date">
                                         </div>
 
-                                        <div class="file" >
-                                            <label class="file-label" >
-                                                <input class="file-input" type="file" name="resume" id="input_file" style="background-color: #34cde8">
-                                                <span class="file-cta" style="background-color: #34cde8;margin-top: 5px;">
-                                                <span class="file-label" style="background-color: #34cde8" >
-                                                사진 올리기
-                                                </span>
-                                            </span>
-                                            </label>
-                                        </div>
-
-                                        <div class="field">
-                                            <label class="label" for="textarea-about">comment</label>
-                                            <p class="control">
-                                                <textarea id="input_comment" class="textarea" placeholder="" value="comment"></textarea>
-                                            </p>
+                                        <div class="input-group mb-3">
+                                            <input id = "input_password" type="text" class="form-control" placeholder="비밀번호" aria-label="Server">
                                         </div>
 
                                         <nav class="level is-mobile">
@@ -387,6 +378,63 @@
                             `;
             $('.modal-content').append(temp_html);
         }
+
+        function add_modal(foodId) {
+            let temp_html = `<div class="box">
+                                <article class="media">
+                                    <div class="media-content">
+                                        <!-- 음식 이름-->
+                                        <div class="form-floating">
+                                            <textarea id="input_name" class="form-control" placeholder="Leave a name here"
+                                                style="margin-bottom: 17px"></textarea>
+                                            <label for="floatingTextarea2"> 음식이름 </label>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input id="input_url" type="email" class="form-control" placeholder="name@example.com">
+                                            <label>사진URL</label>
+                                        </div>
+
+                                        <div class="field">
+                                            <label class="label" for="textarea-about">comment</label>
+                                            <p class="control">
+                                                <textarea id="input_comment" class="textarea" placeholder="" value="comment" style="margin-bottom: 17px"></textarea>
+                                            </p>
+                                        </div>
+
+                                        <!--유통기한-->
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="size">
+                                                <div class="labelBox">
+                                                    <span class="input-group-text" style="background-color: #34cde8">유통기한</span>
+                                                </div>
+                                            </div>
+                                            <input type="date" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" id="input_date">
+                                        </div>
+
+                                        <div class="input-group mb-3">
+                                            <input id = "input_password" type="text" class="form-control" placeholder="비밀번호" aria-label="Server">
+                                        </div>
+
+                                        <nav class="level is-mobile">
+                                            <div class="level-left">
+                                            </div>
+                                            <div class="level-right">
+                                                <div class="level-item">
+                                                    <a class="button is-sparta" style="background-color: #34cde8" onclick="update_foodinfo(${foodId})">업데이트</a>
+                                                </div>
+                                                <div class="level-item">
+                                                    <a class="button is-sparta is-outlined"
+                                                     onclick='delete_modal_box(); $("#modal-edit").removeClass("is-active")'>취소</a>
+                                                </div>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </article>
+                            </div>
+                            `;
+            $('.modal-content').append(temp_html);
+        }        
 
         function delete_modal_box() {
             $('.modal-content').empty();
@@ -421,7 +469,6 @@
     </section>
 
     <div class="btn-box">
-
     </div>
 
     <div class="mypost" id="post-box">
@@ -430,17 +477,15 @@
                 style="margin-bottom: 17px"></textarea>
             <label for="floatingTextarea2"> 음식이름 </label>
         </div>
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupSelect01"
-                style="padding-right: 43px;   background-color: #34cde8; text-align: center">종류</label>
-            <select class="form-select" id="group">
-                <option selected>-- 선택하기 --</option>
-                <option value="과일">과일</option>
-                <option value="채소">채소</option>
-                <option value="음료">음료</option>
-                <option value="물">물</option>
-                <option value="인스턴스">인스턴트</option>
-            </select>
+
+        <div class="form-floating mb-3">
+            <input id="url" type="email" class="form-control" placeholder="name@example.com">
+            <label>사진URL</label>
+        </div>
+
+        <div class="form-floating">
+            <textarea id="comment" class="form-control" placeholder="Leave a name here" style="margin-bottom: 17px"></textarea>
+            <label for="floatingTextarea2"> 코멘트 </label>
         </div>
 
         <div class="input-group input-group-sm mb-3">
@@ -454,20 +499,11 @@
                 id="date">
         </div>
 
-        <div class="file">
-            <label class="file-label">
-                <input class="file-input" type="file" name="resume" id="file" style="background-color: #34cde8">
-                <span class="file-cta" style="background-color: #34cde8;margin-top: 15px;">
-                    <span class="file-label" style="background-color: #34cde8">
-                        사진 올리기
-                    </span>
-                </span>
-            </label>
-        </div>
-        <div class="form-floating">
-            <textarea id="comment" class="form-control" placeholder="Leave a name here"></textarea>
-            <label for="floatingTextarea2"> 코멘트 </label>
-        </div>
+        <div class="input-group mb-3">
+            <input id = "writer" type="text" class="form-control" placeholder="작성자" aria-label="Username">
+            <span class="input-group-text"></span>
+            <input id = "password" type="text" class="form-control" placeholder="비밀번호" aria-label="Server">
+          </div>
 
         <div class="mybtns">
             <button onclick="save_food()" type="button" class="btn btn-dark" style="background-color: #34cde8">냉장고에 넣기!
