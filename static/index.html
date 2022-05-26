@@ -251,13 +251,22 @@
         }
 
         function deleteFood(foodId) {
+            let password = "1234"; //비밀번호 구현해야함.
+
             $.ajax({
                 type: "DELETE",
                 url: "/foods",
-                data: { foodid_give: foodId },
+                data: { 
+                    foodId,
+                    password
+                },
+                dataType: "json",
                 success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload()
+                    alert(response["msg"]);
+                    window.location.reload();
+                },
+                error: function (response) {                   
+                    alert("비밀번호가 틀렸거나, 없는 음식입니다.");
                 }
             });
         }
