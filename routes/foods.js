@@ -1,5 +1,6 @@
 const express = require("express");
 const Foods = require("../schemas/schema_food.js");
+const User = require("../schemas/user.js");
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get("/", async (req, res) => { //음식 조회
         foods,
     });
 });
+
 
 function InsertfoodId() {
     let foodId = 0;
