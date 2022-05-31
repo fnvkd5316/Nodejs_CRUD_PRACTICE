@@ -95,7 +95,6 @@ router.put("/", async (req, res) => { //음식 내용 수정
 });
 
 router.delete("/", async (req, res) => { //음식 삭제
-
     const {foodId, password} = req.body;
 
     const result = await Foods.deleteOne({ foodId: Number(foodId), password });
@@ -110,7 +109,6 @@ router.delete("/", async (req, res) => { //음식 삭제
 });
 
 router.get("/:foodId", async (req, res) => { //음식 상세 조회
-
     const {foodId} = req.params;
 
     const food = await Foods.findOne({ foodId }, { '_id': false, 'password': false });
@@ -121,7 +119,6 @@ router.get("/:foodId", async (req, res) => { //음식 상세 조회
 });
 
 router.get("/:foodId/comments", async (req, res) => {
-
     const {foodId} = req.params;
 
     const comment_list = await Comment.find({ foodId }).exec();
@@ -143,7 +140,56 @@ router.post("/:foodId/comments", authMiddleware, async (req, res) => {
     const {comment} = req.body;
     const {user}    = res.locals;
 
-    await Comment.create({ foodId, userId: user.userId, nickname: user.nickname, comment});
+    let food = await Foods.findOne({foodId: Number(foodId)}).exec();
+
+    if (food) {
+        food.commentNum = food.commentNum + 1;
+        await food.save();
+    }
+
+    let newComment = await new Comment({ foodId, userId: user.userId, nickname: user.nickname, comment});
+    newComment.save();
+
+    res.status(201).send({});
+});
+
+router.delete("/:foodId/:commentId", authMiddleware, async (req, res) => {
+
+    const {foodId, commentId}  = req.params;
+    const {user} = res.locals;
+
+    let result = await Comment.deleteOne({_id: commentId, userId: user.userId}).exec();
+
+    if(!result['deletedCount']) {
+        return res.status(400).send({
+            errorMessage:"내가 쓴 댓글이 아니거나, 없는 댓글입니다.",
+        });
+    }
+
+    let food = await Foods.findOne({foodId: Number(foodId)}).exec();
+
+    if (food) {
+        food.commentNum = food.commentNum - 1;
+        await food.save();
+    }
+
+    res.status(201).send({});
+});
+
+
+router.patch("/:foodId/:commentId", authMiddleware, async (req, res) => {
+
+    const {foodId, commentId}  = req.params;
+    const {comment} = req.body;
+    const {user} = res.locals;
+
+    let result = await Comment.updateOne({_id: commentId, userId: user.userId},{$set: {comment, commentTime: new Date()}}).exec();
+
+    if(!result['matchedCount']) {
+        return res.status(400).send({
+            errorMessage:"내가 쓴 댓글이 아니거나, 없는 댓글입니다.",
+        });
+    }
 
     res.status(201).send({});
 });

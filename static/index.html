@@ -213,7 +213,6 @@
             return date_string;
         };
 
-        //음식 정보 저장
         function save_food() {
             let writer = $('#writer').val();       // 작성자
             let password = $('#password').val();   // 비밀번호
@@ -370,7 +369,7 @@
                                             <input type="text" class="form-control comment_regist" placeholder="댓글등록" aria-label="Recipient's username" aria-describedby="button-addon2">
                                             <button class="btn level-item button is-sparta" type="button" id="button-addon2" onclick = "add_comment(${foodId})">등록</button>
                                         </div>
-                                        <a class="card-text" onclick = "req_comments(${foodId})">댓글보기(${commentNum})</a>  
+                                        <a class="card-text" onclick = "listing_comments(${foodId})">댓글보기(${commentNum})</a>  
                                         <div class = "comment_list">                                                                                  
                                         </div>
                                     </div>
@@ -381,6 +380,107 @@
                     $('.modal_2').append(temp_html2);
                 }
             })
+        }
+
+        function open_box() {
+            $('#post-box').show()
+        }
+
+        function close_box() {
+            $('#post-box').hide()
+        }
+
+        function listing_comments(foodId) {
+            $.ajax({
+                type: 'GET',
+                url: `/foods/${foodId}/comments`,
+                data: {},
+                success: function (response) {
+                    $('.comment_list').empty();
+                    
+                    let rows = response['comment_list'];
+                    rows.sort((a, b) => new Date(b['commentTime']) - new Date(a['commentTime']));
+
+                    for (let i = 0; i < rows.length; i++) {
+                        make_comment(rows[i], i);
+                    }
+                },
+                error: function (error) {
+                    $('.comment_list').empty();
+                    alert(error.responseJSON.errorMessage);
+                }
+            })
+        }
+
+        function make_comment(item, i) {
+            let time_text = time2str(item['commentTime']);
+
+              let html_temp = `
+                        <div class="input-group">
+                            <input type="text" class="form-control comment_${i}" placeholder="${item['nickname']}: ${item['comment']} - ${time_text}" aria-label="Recipient's username with two button addons">
+                            <button class="level-item button is-sparta green-outlined" type="button" onclick = "update_comment(${item['foodId']}, '${item['commentId']}', ${i})">수정</button>
+                            <button class="level-item button is-sparta is-outlined" type="button" onclick = "delete_comment(${item['foodId']},'${item['commentId']}')">삭제</button>
+                        </div>  
+                `;
+
+            $('.comment_list').append(html_temp);            
+        }
+
+        function add_comment(foodId) {
+            let comment = $('.comment_regist').val();
+            $.ajax({
+                type: 'POST',
+                url: `/foods/${foodId}/comments`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                data: {
+                    comment,
+                },
+                success: function (response) {
+                    get_food(foodId);
+                    listing_comments(foodId);
+                },
+                error: function (error) {
+                    alert(error.responseJSON.errorMessage);
+                }
+            })
+        }
+
+        function delete_comment(foodId, commentId) {
+            $.ajax({
+                type: 'DELETE',
+                url: `/foods/${foodId}/${commentId}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                data: {},
+                success: function (response) {
+                    listing_comments(foodId);
+                },
+                error: function (error) {
+                    alert(error.responseJSON.errorMessage);
+                }
+            })            
+        }
+
+        function update_comment(foodId, commentId, i) {
+            let modifyComment = $(`.comment_${i}`).val();
+
+            $.ajax({
+                type: 'PATCH',
+                url: `/foods/${foodId}/${commentId}`,
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                data: {comment: modifyComment},
+                success: function (response) {
+                    listing_comments(foodId);
+                },
+                error: function (error) {
+                    alert(error.responseJSON.errorMessage);
+                }
+            })            
         }
 
         function update_req_modal(foodId) {
@@ -476,69 +576,23 @@
             $('.modal-content').empty();
         }
 
-        function open_box() {
-            $('#post-box').show()
-        }
+        function time2str(date) {
+            let orderdate = new Date(date);
+            let now = new Date()
+            let time = (now - orderdate) / 1000 / 60  // 분
 
-        function close_box() {
-            $('#post-box').hide()
-        }
-
-        function req_comments(foodId) {
-            $.ajax({
-                type: 'GET',
-                url: `/foods/${foodId}/comments`,
-                data: {},
-                success: function (response) {
-                    $('.comment_box').empty();
-
-                    let rows = response['comment_list'];
-
-                    for (let i = 0; i < rows.length; i++) {
-
-                        let nickname = rows[i]['nickname'];
-                        let comment = rows[i]['comment'];
-                        let commentTime = rows[i]['commentTime'];
-
-                        let temp_html = `
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="내용없어요!" aria-label="Recipient's username with two button addons">
-                                <button class="level-item button is-sparta green-outlined" type="button">수정</button>
-                                <button class="level-item button is-sparta is-outlined" type="button">삭제</button>
-                            </div>  
-                        `;
-
-                        $('.comment_list').append(temp_html);
-                    }
-                },
-                error: function (error) {
-                    alert(error.responseJSON.errorMessage);
-                }
-            })
-        }
-
-        function add_comment(foodId) {
-            let comment = $('.comment_regist').val();
-
-            console.log(comment);
-            console.log(localStorage.getItem("token"));
-
-            $.ajax({
-                type: 'POST',
-                url: `/foods/${foodId}/comments`,
-                headers: {
-                    authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                data: {
-                    comment,
-                },
-                success: function (response) {
-
-                },
-                error: function (error) {
-                    alert(error.responseJSON.errorMessage);
-                }
-            })
+            if (time < 60) {
+                return parseInt(time) + "분 전"
+            }
+            time = time / 60  // 시간
+            if (time < 24) {
+                return parseInt(time) + "시간 전"
+            }
+            time = time / 24
+            if (time < 7) {
+                return parseInt(time) + "일 전"
+            }
+            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         }
 
     </script>
