@@ -97,15 +97,19 @@ router.put("/", async (req, res) => { //음식 내용 수정
 router.delete("/", async (req, res) => { //음식 삭제
     const {foodId, password} = req.body;
 
-    const result = await Foods.deleteOne({ foodId: Number(foodId), password });
+    console.log(foodId,password);
+
+    const result = await Foods.deleteOne({ foodId: Number(foodId), password }).exec();
 
     if (result['deletedCount'] === 0) {
         return res.status(400).json({ msg: "비밀번호가 틀렸거나, 없는 음식입니다." });
-    } else{
-        res.json({
-            msg: "삭제 되었습니다."
-        });
-    }
+    } 
+
+    await Comment.deleteMany({foodId: Number(foodId)}).exec();
+
+    res.json({
+        msg: "삭제 되었습니다."
+    });
 });
 
 router.get("/:foodId", async (req, res) => { //음식 상세 조회
