@@ -1,6 +1,8 @@
 const express = require("express");
 const Foods = require("../schemas/schema_food.js");
-const User = require("../schemas/user.js");
+const User = require("../schemas/schema_user.js");
+const Comment = require("../schemas/schema_comment.js");
+const authMiddleware = require("../middlewares/auth-middleware.js");
 
 const router = express.Router();
 
@@ -14,12 +16,9 @@ router.get("/", async (req, res) => { //음식 조회
     });
 });
 
-
 function InsertfoodId() {
     let foodId = 0;
-
     foodId = Date.parse(Date());
-
     return parseInt(foodId);
 }
 
@@ -30,7 +29,7 @@ router.post("/", async (req, res) => { //음식 등록
         foodName,
         category,
         thumbnailUrl,
-        comment,
+        contents,
         expirationDate,
         changeDate,
         modification
@@ -45,10 +44,11 @@ router.post("/", async (req, res) => { //음식 등록
         foodName,
         category,
         thumbnailUrl,
-        comment,
+        contents,
         expirationDate,
         changeDate,
-        modification
+        modification,
+        commentNum: 0,
     });
 
     res.json({
@@ -64,7 +64,7 @@ router.put("/", async (req, res) => { //음식 내용 수정
         foodName,
         category,
         thumbnailUrl,
-        comment,
+        contents,
         expirationDate,
         changeDate,
         modification
@@ -81,7 +81,7 @@ router.put("/", async (req, res) => { //음식 내용 수정
                     foodName,
                     category,
                     thumbnailUrl,
-                    comment,
+                    contents,
                     expirationDate,
                     changeDate,
                     modification
@@ -109,7 +109,7 @@ router.delete("/", async (req, res) => { //음식 삭제
     }
 });
 
-router.get("/:foodId", async (req, res) => {
+router.get("/:foodId", async (req, res) => { //음식 상세 조회
 
     const {foodId} = req.params;
 
@@ -118,6 +118,34 @@ router.get("/:foodId", async (req, res) => {
     res.json({
         food,
     });
+});
+
+router.get("/:foodId/comments", async (req, res) => {
+
+    const {foodId} = req.params;
+
+    const comment_list = await Comment.find({ foodId }).exec();
+
+    if (!comment_list.length) {
+        return res.status(400).send({
+            errorMessage: "등록된 댓글이 없습니다.",
+        })
+    }
+
+    res.send({
+        comment_list,
+    });
+});
+
+router.post("/:foodId/comments", authMiddleware, async (req, res) => {
+
+    const {foodId}  = req.params;
+    const {comment} = req.body;
+    const {user}    = res.locals;
+
+    await Comment.create({ foodId, userId: user.userId, nickname: user.nickname, comment});
+
+    res.status(201).send({});
 });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../schemas/user.js");
+const User = require("../schemas/schema_user.js");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post("/login", async (req, res) => {
         });
     }
 
-    const token = jwt.sign({ userId: "등록됨" }, "customized-secret-key");    
+    const token = jwt.sign({ userId: user.userId }, "test");    
 
     res.send({
         result: "success",
@@ -25,9 +25,15 @@ router.post("/login", async (req, res) => {
 router.post("/register", async (req, res) => {
     const { email, password, nickname} = req.body;
 
-    const existUser = await User.find({ $or: [{email}, {nickname}], });
+    if (!(email && password && nickname)) {
+        return res.status(400).send({
+            errorMessage: '모든 항목을 기입해야 합니다.',            
+        });
+    }
 
-    if (existUser.length) {
+    const olduser = await User.find({ $or: [{email}, {nickname}], });
+
+    if (olduser.length) {
         return res.status(400).send({
             errorMessage: '이미 가입된 이메일 또는 닉네임이 있습니다.',            
         });

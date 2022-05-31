@@ -15,27 +15,16 @@ const foodSchema = mongoose.Schema({
         type: String,  
         required: true,      
     },
-    foodName: {
-        type: String,        
-    },
-    category: {
-        type: String,
-    },    
-    thumbnailUrl: {
-        type: String,
-    },    
-    comment: {
-        type: String,
-    },    
-    expirationDate: {
-        type: String,        
-    },
-    changeDate: {
-        type: String,
-    },
-    modification: {
-        type: Boolean,
-    },
+    foodName:       String,        
+    category:       String,
+    thumbnailUrl:   String,
+    contents:       String,
+    expirationDate: String,
+    changeDate:     String,
+
+    modification:   Boolean,
+    
+    commentNum:     Number,
 });
 
 module.exports = mongoose.model("Foods", foodSchema);

@@ -97,7 +97,7 @@
                 },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        $.cookie('mytoken', response['token'], {path: '/'});
+                        localStorage.setItem("token", response.token);
                         window.location.replace("/")
                     } else {
                         alert(response['msg'])
@@ -213,74 +213,74 @@
         }
 
         function check_id_dup() {
-            let username = $("#input-username").val()
-            console.log(username)
-            if (username == "") {
-                $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
-                $("#input-username").focus()
-                return;
-            }
-            if (!is_username(username)) {
-                $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
-                $("#input-username").focus()
-                return;
-            }
-            $("#help-id").addClass("is-loading")
+            alert("사용못함!");
+            // let username = $("#input-username").val()
+            // console.log(username)
+            // if (username == "") {
+            //     $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-username").focus()
+            //     return;
+            // }
+            // if (!is_username(username)) {
+            //     $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-username").focus()
+            //     return;
+            // }
+            // $("#help-id").addClass("is-loading")
 
-            $.ajax({
-                type: "POST",
-                url: "/sign_up/check_dup",
-                data: {
-                    username_give: username
-                },
-                success: function (response) {
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/sign_up/check_dup",
+            //     data: {
+            //         username_give: username
+            //     },
+            //     success: function (response) {
 
-                    if (response["exists"]) {
-                        $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
-                        $("#input-username").focus()
-                    } else {
-                        $("#help-id").text("사용할 수 있는 아이디입니다.").removeClass("is-danger").addClass("is-success")
-                    }
-                    $("#help-id").removeClass("is-loading")
+            //         if (response["exists"]) {
+            //             $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
+            //             $("#input-username").focus()
+            //         } else {
+            //             $("#help-id").text("사용할 수 있는 아이디입니다.").removeClass("is-danger").addClass("is-success")
+            //         }
+            //         $("#help-id").removeClass("is-loading")
 
-                }
-            });
+            //     }
+            // });
         }
 
         function check_nickname_dup() {
-            let nickname = $("#input-nickname").val();
+            alert("사용못함!");
+            // let nickname = $("#input-nickname").val();
 
-            if (nickname == "") {
-                $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
-                $("#input-nickname").focus();
-                return;
-            }
-            if (!is_nickname(nickname)) {
-                $("#help-nickname").text("닉네임의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
-                $("#input-nickname").focus();
-                return;
-            }
+            // if (nickname == "") {
+            //     $("#help-nickname").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-nickname").focus();
+            //     return;
+            // }
+            // if (!is_nickname(nickname)) {
+            //     $("#help-nickname").text("닉네임의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-nickname").focus();
+            //     return;
+            // }
 
-            $("#help-nickname").addClass("is-loading");
+            // $("#help-nickname").addClass("is-loading");
 
-            $.ajax({
-                type: "POST",
-                url: "/sign_up/check_nickname_dup",
-                data: {
-                    nickname_give: nickname
-                },
-                success: function (response) {
-
-                    if (response["exists"]) {
-                        $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
-                        $("#input-nickname").focus()
-                    } else {
-                        $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
-                    }
-                    $("#help-nickname").removeClass("is-loading")
-
-                }
-            });
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/sign_up/check_nickname_dup",
+            //     data: {
+            //         nickname_give: nickname
+            //     },
+            //     success: function (response) {
+            //         if (response["exists"]) {
+            //             $("#help-nickname").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+            //             $("#input-nickname").focus()
+            //         } else {
+            //             $("#help-nickname").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
+            //         }
+            //         $("#help-nickname").removeClass("is-loading")
+            //     }
+            // });
         }
     </script>
 </head>
