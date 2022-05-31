@@ -69,8 +69,8 @@
     </style>
     <script>
         function sign_in() {
-            let email = $("#input-username").val()
-            let password = $("#input-password").val()
+            let email = $("#input-username").val();
+            let password = $("#input-password").val();
 
             if (email == "") {
                 $("#help-id-login").text("아이디를 입력해주세요.")
@@ -93,7 +93,7 @@
                 url: "/users/login",
                 data: {
                     email,
-                    password,
+                    password
                 },
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -118,6 +118,7 @@
             // if ($("#help-id").hasClass("is-danger")) {
             //     alert("아이디를 다시 확인해주세요.")
             //     return;
+            // }
             // } else if (!$("#help-id").hasClass("is-success")) {
             //     alert("아이디 중복확인을 해주세요.")
             //     return;
@@ -126,33 +127,40 @@
             // if ($("#help-nickname").hasClass("is-danger")) {
             //     alert("닉네임을 다시 확인해주세요.")
             //     return;
+            // }
             // } else if (!$("#help-nickname").hasClass("is-success")) {
             //     alert("닉네임 중복확인을 해주세요.")
             //     return;
             // }
 
-            if (password == "") {
-                $("#help-password").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
-                $("#input-password").focus()
-                return;
-            } else if (!is_password(password)) {
-                $("#help-password").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-20자").removeClass("is-safe").addClass("is-danger")
-                $("#input-password").focus()
-                return;
-            } else {
-                $("#help-password").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success")
-            }
-            if (password2 == "") {
-                $("#help-password2").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
-                $("#input-password2").focus()
-                return;
-            } else if (password2 != password) {
-                $("#help-password2").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
-                $("#input-password2").focus()
-                return;
-            } else {
-                $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
-            }
+            // if (password == "") {
+            //     $("#help-password").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-password").focus()
+            //     return;
+            // } else if (!is_password(password)) {
+            //     $("#help-password").text("비밀번호 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 4-20자").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-password").focus()
+            //     return;
+            // } else if (!compare_userId_Password(password, email)){
+            //     $("#help-password").text("비밀번호에 아이디가 포함되면 안됩니다.").removeClass("is-safe").addClass("is-danger");
+            //     $("#input-password").focus()
+            //     $("#help-password2").text("비밀번호에 아이디가 포함되면 안됩니다.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-password2").focus()                
+            //     return;
+            // } else {
+            //     $("#help-password").text("사용할 수 있는 비밀번호입니다.").removeClass("is-danger").addClass("is-success");
+            // }
+            // if (password2 == "") {
+            //     $("#help-password2").text("비밀번호를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-password2").focus()
+            //     return;
+            // } else if (password2 != password) {
+            //     $("#help-password2").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger")
+            //     $("#input-password2").focus()
+            //     return;
+            // } else {
+            //     $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
+            // }
 
             $.ajax({
                 type: "POST",
@@ -160,6 +168,7 @@
                 data: {
                     email,
                     password,
+                    password2,
                     nickname,
                 },
                 success: function (response) {
@@ -182,13 +191,22 @@
         }
 
         function is_username(asValue) {
-            var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
+            var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{3,10}$/;
             return regExp.test(asValue);
         }
 
         function is_password(asValue) {
-            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;
             return regExp.test(asValue);
+        }
+
+        function is_password(asValue) {
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{4,20}$/;
+            return regExp.test(asValue);
+        }
+
+        function compare_userId_Password(password, email) {
+            return (password.includes(email) !== true)
         }
 
         function is_nickname(asValue) {
@@ -196,24 +214,26 @@
             return regExp.test(asValue);
         }
 
-        function password_check() {
-            let password = $("#input-password").val();
-            let password2 = $("#input-password2").val();
+        // function password_check() {
+        //     let email = $("#input-username").val()
+        //     let password = $("#input-password").val();
+        //     let password2 = $("#input-password2").val();
 
-            if (password2 != password) {
-                $("#help-password2").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger");
-            }
-            else if(is_password(password2) && is_password(password)){
-                $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success");
-            }
-            else{
-                $("#help-password2").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 8-20자").removeClass("is-safe").addClass("is-danger");
-                $("#input-password").focus();
-            }
-        }
+        //     if (!compare_userId_Password(password, email)) {
+        //         $("#help-password2").text("비밀번호에 아이디가 포함되면 안됩니다.").removeClass("is-safe").addClass("is-danger")
+        //         $("#input-password2").focus()      
+        //     }else if (password2 != password) {
+        //         $("#help-password2").text("비밀번호가 일치하지 않습니다.").removeClass("is-safe").addClass("is-danger");
+        //     }else if(is_password(password2) && is_password(password)){
+        //         $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success");
+        //     }else{
+        //         $("#help-password2").text("비밀번호의 형식을 확인해주세요. 영문과 숫자 필수 포함, 특수문자(!@#$%^&*) 사용가능 4-20자").removeClass("is-safe").addClass("is-danger");
+        //         $("#input-password2").focus();
+        //     }
+        // }
 
         function check_id_dup() {
-            alert("사용못함!");
+            alert("기능 잠궈둠!");
             // let username = $("#input-username").val()
             // console.log(username)
             // if (username == "") {
@@ -222,7 +242,7 @@
             //     return;
             // }
             // if (!is_username(username)) {
-            //     $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+            //     $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 3-10자 길이").removeClass("is-safe").addClass("is-danger")
             //     $("#input-username").focus()
             //     return;
             // }
@@ -249,7 +269,7 @@
         }
 
         function check_nickname_dup() {
-            alert("사용못함!");
+            alert("기능 잠굼!");
             // let nickname = $("#input-nickname").val();
 
             // if (nickname == "") {
@@ -307,7 +327,7 @@
                                 <button class="button is-sparta" onclick="check_id_dup()">중복확인</button>
                             </div>
                         </div>
-                        <p id="help-id" class="help is-hidden">아이디는 2-10자의 영문과 숫자와 일부 특수문자(._-)만 입력 가능합니다.</p>
+                        <p id="help-id" class="help is-hidden">아이디는 3-10자의 영문과 숫자와 일부 특수문자(._-)만 입력 가능합니다.</p>
                         <p id="help-id-login" class="help is-danger"></p>
 
                         <div class="field">
@@ -315,7 +335,7 @@
                                 <input id="input-password" class="input" type="password" placeholder="비밀번호">
                                 <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
                             </div>
-                            <p id="help-password" class="help">영문과 숫자 조합의 8-20자의 비밀번호를 설정해주세요. 특수문자(!@#$%^&*)도 사용
+                            <p id="help-password" class="help">영문과 숫자 조합의 4-20자의 비밀번호를 설정해주세요. 특수문자(!@#$%^&*)도 사용
                                 가능합니다.</p>
                         </div>
                     </div>
@@ -346,7 +366,7 @@
                                            placeholder="비밀번호 재입력" onkeyup="password_check()">
                                     <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
                                 </div>
-                                <p id="help-password2" class="help is-hidden">영문과 숫자 조합의 8-20자의 비밀번호를 설정해주세요. 특수문자(!@#$%^&*)도 사용
+                                <p id="help-password2" class="help is-hidden">영문과 숫자 조합의 4-20자의 비밀번호를 설정해주세요. 특수문자(!@#$%^&*)도 사용
                                 가능합니다.</p>
 
                             </div>

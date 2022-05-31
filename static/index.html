@@ -160,6 +160,12 @@
     </style>
     <script>
         $(document).ready(function () {
+            if ( localStorage.getItem("token") === null) {
+                $('.nav_bar').text("로그인");
+            }else{
+                $('.nav_bar').text("로그아웃");
+            }
+
             listing();
         });
 
@@ -369,7 +375,7 @@
                                             <input type="text" class="form-control comment_regist" placeholder="댓글등록" aria-label="Recipient's username" aria-describedby="button-addon2">
                                             <button class="btn level-item button is-sparta" type="button" id="button-addon2" onclick = "add_comment(${foodId})">등록</button>
                                         </div>
-                                        <a class="card-text" onclick = "listing_comments(${foodId})">댓글보기(${commentNum})</a>  
+                                        <a class="card-text" onclick = "listing_comments(${foodId})">댓글보기(${commentNum})-클릭</a>  
                                         <div class = "comment_list">                                                                                  
                                         </div>
                                     </div>
@@ -595,6 +601,12 @@
             return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
         }
 
+        function click_home() {
+            localStorage.clear();
+            window.location.href = './login.html';
+            alert("홈으로 이동합니다. 자동으로 로그아웃 처리됩니다.");
+        }
+
     </script>
 </head>
 
@@ -604,7 +616,7 @@
         <nav>
             <div>
                 <!-- <h5 class="login_text" style="display: inline">안녕하세요</h5> -->
-                <button onclick="window.location.href='./login.html'" class="level-item button is-sparta is-outlined" type="button" style="margin-bottom: 15px;">로그인</button>
+                <button onclick="window.location.href='./login.html'; click_home();" class="level-item button is-sparta is-outlined nav_bar" type="button" style="margin-bottom: 15px;">로그인</button>
             </div>
         </nav>
     </header>
