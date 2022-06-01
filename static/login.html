@@ -173,7 +173,7 @@
                 },
                 success: function (response) {
                     alert("회원가입을 축하드립니다!");
-                    window.location.replace("/");
+                    window.location.reload();
                 },
                 error: function (error) {
                     alert(error.responseJSON.errorMessage);
@@ -305,7 +305,7 @@
     </script>
 </head>
 <body>
-<button onclick ="location.href = '/'"><img src="home_button.png" height="50" width="50"></button>
+<button onclick ="location.href = '/'"><img src="home_button.png" height="50" width="50">메인가기</button>
 <section class="hero is-white">
     <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
         <h1 class="title is-sparta">나의 냉장고</h1>
